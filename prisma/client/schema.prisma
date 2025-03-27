@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  elo       Int       @default(1000)
+  email     String?   @unique // For future Google OAuth integration
+  image     String? // For future Google OAuth profile picture
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  sessions  Session[]
+
+  // Match history
+  matchesAsPlayer1 Match[] @relation("Player1")
+  matchesAsPlayer2 Match[] @relation("Player2")
+  wins             Match[] @relation("MatchWinner")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  player    Player   @relation(fields: [playerId], references: [id])
+  playerId  String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Match {
+  id        String   @id @default(cuid())
+  player1   Player   @relation("Player1", fields: [player1Id], references: [id])
+  player1Id String
+  player2   Player   @relation("Player2", fields: [player2Id], references: [id])
+  player2Id String
+  winner    Player   @relation("MatchWinner", fields: [winnerId], references: [id])
+  winnerId  String
+  createdAt DateTime @default(now())
+}
