@@ -1,5 +1,5 @@
-import { prisma } from "../../../prisma/db";
-import type { Player, Session } from "../../../prisma/client";
+import { prisma } from "./db";
+import type { Player, Session } from "$lib/server/db";
 import {
   encodeBase32LowerCaseNoPadding,
   encodeHexLowerCase,
