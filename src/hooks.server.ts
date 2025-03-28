@@ -8,6 +8,7 @@ import type { Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {
   const token = event.cookies.get("session") ?? null;
+
   if (token === null) {
     event.locals.player = null;
     event.locals.session = null;
@@ -16,7 +17,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   const { session, player } = await validateSessionToken(token);
   if (session !== null) {
-    setSessionTokenCookie(event, session.id, session.expiresAt);
+    setSessionTokenCookie(event, token, session.expiresAt);
   } else {
     deleteSessionTokenCookie(event);
   }

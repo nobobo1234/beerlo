@@ -3,7 +3,13 @@ import { prisma } from "$lib/server/db";
 
 export async function GET() {
   try {
-    const players = await prisma.player.findMany();
+    const players = await prisma.player.findMany({
+      select: {
+        id: true,
+        name: true,
+        elo: true,
+      },
+    });
     return json(players);
   } catch (error) {
     console.error("Error fetching players:", error);

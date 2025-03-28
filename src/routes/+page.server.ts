@@ -3,13 +3,9 @@ import {
   deleteSessionTokenCookie,
 } from "$lib/server/session";
 import { redirect, fail } from "@sveltejs/kit";
-import type { ServerLoad, Actions } from "@sveltejs/kit";
+import type { PageServerLoad, Actions } from "./$types";
 
-export const load: ServerLoad = async (event) => {
-  if (!event.locals.player) {
-    return redirect(302, "/login");
-  }
-
+export const load: PageServerLoad = async (event) => {
   return {
     user: event.locals.player,
   };

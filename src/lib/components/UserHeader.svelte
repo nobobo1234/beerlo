@@ -1,23 +1,23 @@
 <script lang="ts">
-  import type { User } from "$lib/types";
-  export let user: User;
+  const data = $props();
 </script>
 
 <div class="header">
   <div class="user-section">
-    <span class="user-name">Welcome, {user.name}! (ELO: {user.elo})</span>
-    <form method="POST" action="/logout">
-      <button type="submit" class="sign-out-btn">Sign Out</button>
+    <span class="user-name"><b>{data.user.name}</b> ({data.user.elo})</span>
+    <form method="POST" action="?/logout">
+      <button type="submit" class="sign-out-btn">Log uit</button>
     </form>
   </div>
 </div>
 
-<style>
+<style lang="scss">
   .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    margin-bottom: 2rem;
+    background-color: #ffffff;
+    padding: 1rem 2rem;
   }
 
   .user-section {

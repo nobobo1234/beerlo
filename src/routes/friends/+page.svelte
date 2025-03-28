@@ -1,12 +1,14 @@
 <script lang="ts">
   import type { Player } from "$lib/types";
-  export let players: Player[] = [];
+  import type { PageProps } from "./$types";
   import { onMount } from "svelte";
 
   // Get all players from the database
-  let allPlayers: Player[] = [];
-  let isLoading = true;
-  let error: string | null = null;
+  let allPlayers: Player[] = $state([]);
+
+  let isLoading = $state(true);
+  let error: string | null = $state("");
+  const { data }: PageProps = $props();
 
   onMount(async () => {
     try {
@@ -15,6 +17,10 @@
         throw new Error("Failed to fetch players");
       }
       allPlayers = await response.json();
+
+      // Filter out the current user from the list of players
+      allPlayers = allPlayers.filter((player) => player.id !== data.user.id);
+
       isLoading = false;
     } catch (err) {
       console.error("Error fetching players:", err);
@@ -25,27 +31,19 @@
 </script>
 
 <div class="friends-page">
-  <h1>Friends</h1>
-  <ul>
-    {#each players as player}
-      <li>{player.name}</li>
-    {/each}
-  </ul>
+  <h1>Vrienden</h1>
+  <ul>Je hebt nog geen vrienden.</ul>
 
-  <div class="all-players">
-    {#if isLoading}
-      <p>Loading players...</p>
-    {:else if error}
-      <p class="error">{error}</p>
-    {:else}
+  <h2>Voeg vrienden toe</h2>
+  <form method="POST" action="?/addFriend">
+    <select name="friendId">
       {#each allPlayers as player}
-        <div class="player-card">
-          <h2>{player.name}</h2>
-          <p>ELO: {player.elo}</p>
-        </div>
+        <option value={player.name}>{player.name}</option>
       {/each}
-    {/if}
-  </div>
+    </select>
+    <button type="submit">Voeg vriend toe</button>
+    <p class="error">{error}</p>
+  </form>
 </div>
 
 <style>
